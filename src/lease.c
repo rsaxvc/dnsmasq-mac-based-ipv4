@@ -694,6 +694,57 @@ u64 lease_find_max_addr6(struct dhcp_context *context)
 
 #endif
 
+/* Find an acceptable address based on client hardware address, based on context */
+struct in_addr lease_find_ip_from_hw_addr(struct dhcp_context *context, unsigned char *hwaddr, int hw_len )
+{
+  struct in_addr addr;
+	struct in_addr netmask = context->netmask;
+	unsigned hwaddr_packed = (unsigned)ntohl( context->start.s_addr );
+
+	 /* splice in HW addr */
+	int i;
+
+	for( i = 0; hw_len > 0 && i < 4; hw_len--, i++)
+    {
+		hwaddr_packed &= ~(0xFFu << 8*i);
+		hwaddr_packed |= hwaddr[hw_len-1] << 8*i;
+		}
+
+	addr.s_addr = htonl( hwaddr_packed );
+	
+	/* Splice together a hybrid address */
+	addr.s_addr = ( addr.s_addr & ~netmask.s_addr ) | ( context->start.s_addr & netmask.s_addr );
+
+	my_syslog(MS_DHCP | LOG_INFO, _("IP4MAC: MAC Addr %02x:%02x:%02x:%02x:%02x:%02x"),
+		hwaddr[0],
+		hwaddr[1],
+		hwaddr[2],
+		hwaddr[3],
+		hwaddr[4],
+		hwaddr[5]);
+
+	my_syslog(MS_DHCP | LOG_INFO, _("IP4MAC: netmask: %u.%u.%u.%u"),
+		ntohl(netmask.s_addr) >> 24 & 0xFFu,
+		ntohl(netmask.s_addr) >> 16 & 0xFFu,
+		ntohl(netmask.s_addr) >>  8 & 0xFFu,
+		ntohl(netmask.s_addr) >>  0 & 0xFFu
+		);
+
+	my_syslog(MS_DHCP | LOG_INFO, _("IP4MAC: Seed IPv4 Addr: %u.%u.%u.%u"),
+		hwaddr_packed >> 24 & 0xFFu,
+		hwaddr_packed >> 16 & 0xFFu,
+		hwaddr_packed >>  8 & 0xFFu,
+		hwaddr_packed >>  0 & 0xFFu);
+
+	my_syslog(MS_DHCP | LOG_INFO, _("IP4MAC: Calculated IPv4 Addr %u.%u.%u.%u"),
+		ntohl(addr.s_addr) >> 24 & 0xFFu,
+		ntohl(addr.s_addr) >> 16 & 0xFFu,
+		ntohl(addr.s_addr) >>  8 & 0xFFu,
+		ntohl(addr.s_addr) >>  0 & 0xFFu);
+
+  return addr;
+}
+
 /* Find largest assigned address in context */
 struct in_addr lease_find_max_addr(struct dhcp_context *context)
 {

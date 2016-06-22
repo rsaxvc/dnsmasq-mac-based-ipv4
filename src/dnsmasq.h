@@ -238,7 +238,8 @@ struct event_desc {
 #define OPT_SCRIPT_ARP     53
 #define OPT_MAC_B64        54
 #define OPT_MAC_HEX        55
-#define OPT_LAST           56
+#define OPT_IP_MAC_ADDR    56
+#define OPT_LAST           57
 
 /* extra flags for my_syslog, we use a couple of facilities since they are known 
    not to occupy the same bits as priorities, no matter how syslog.h is set up. */
@@ -1308,6 +1309,7 @@ void lease_set_interface(struct dhcp_lease *lease, int interface, time_t now);
 struct dhcp_lease *lease_find_by_client(unsigned char *hwaddr, int hw_len, int hw_type,  
 					unsigned char *clid, int clid_len);
 struct dhcp_lease *lease_find_by_addr(struct in_addr addr);
+struct in_addr lease_find_ip_from_hw_addr(struct dhcp_context *context, unsigned char *hwaddr, int hw_len );
 struct in_addr lease_find_max_addr(struct dhcp_context *context);
 void lease_prune(struct dhcp_lease *target, time_t now);
 void lease_update_from_configs(void);

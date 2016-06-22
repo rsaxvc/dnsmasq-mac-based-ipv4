@@ -159,6 +159,7 @@ struct myoption {
 #define LOPT_SCRIPT_ARP    347
 #define LOPT_DHCPTTL       348
 #define LOPT_TFTP_MTU      349
+#define LOPT_IP_MAC_ADDR   350
  
 #ifdef HAVE_GETOPT_LONG
 static const struct option opts[] =  
@@ -323,6 +324,7 @@ static const struct myoption opts[] =
     { "dns-loop-detect", 0, 0, LOPT_LOOP_DETECT },
     { "script-arp", 0, 0, LOPT_SCRIPT_ARP },
     { "dhcp-ttl", 1, 0 , LOPT_DHCPTTL },
+		{ "dhcp-hwaddr-based-ip", 0, 0,  LOPT_IP_MAC_ADDR },
     { NULL, 0, 0, 0 }
   };
 
@@ -461,6 +463,7 @@ static struct {
   { LOPT_ADD_SBNET, ARG_ONE, "<v4 pref>[,<v6 pref>]", gettext_noop("Add specified IP subnet to forwarded DNS queries."), NULL },
   { LOPT_CPE_ID, ARG_ONE, "<text>", gettext_noop("Add client identification to forwarded DNS queries."), NULL },
   { LOPT_DNSSEC, OPT_DNSSEC_PROXY, NULL, gettext_noop("Proxy DNSSEC validation results from upstream nameservers."), NULL },
+  { LOPT_IP_MAC_ADDR, OPT_IP_MAC_ADDR, NULL, gettext_noop("Attempt to allocate IP addresses based on MAC addresses to DHCP clients."), NULL },
   { LOPT_INCR_ADDR, OPT_CONSEC_ADDR, NULL, gettext_noop("Attempt to allocate sequential IP addresses to DHCP clients."), NULL },
   { LOPT_CONNTRACK, OPT_CONNTRACK, NULL, gettext_noop("Copy connection-track mark from queries to upstream connections."), NULL },
   { LOPT_FQDN, OPT_FQDN_UPDATE, NULL, gettext_noop("Allow DHCP clients to do their own DDNS updates."), NULL },

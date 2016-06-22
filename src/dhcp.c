@@ -666,6 +666,8 @@ int address_allocate(struct dhcp_context *context,
 	  if (option_bool(OPT_CONSEC_ADDR))
 	    /* seed is largest extant lease addr in this context */
 	    start = lease_find_max_addr(c);
+		else if(option_bool(OPT_IP_MAC_ADDR))
+			start = lease_find_ip_from_hw_addr(c, hwaddr, hw_len );
 	  else
 	    /* pick a seed based on hwaddr */
 	    start.s_addr = htonl(ntohl(c->start.s_addr) + 
